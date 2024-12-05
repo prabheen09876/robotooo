@@ -1,80 +1,92 @@
-import { motion } from 'framer-motion';
-import { Bot, Menu, X, Search } from 'lucide-react';
-import { useState } from 'react';
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Bot, Menu, X, Search, ShoppingCart } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { useCart } from '../context/CartContext';
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const [isSearchFocused, setIsSearchFocused] = useState(false);
+  const { totalItems } = useCart();
 
   return (
     <motion.nav
       initial={{ y: -100 }}
       animate={{ y: 0 }}
-      transition={{ duration: 0.5 }}
-      className="sticky top-4 mx-4 z-50 bg-black/50 backdrop-blur-lg border border-gray-800 rounded-full"
+      className="sticky top-0 z-50 px-4 py-4"
     >
-      <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-10">
-        <div className="flex items-center justify-between h-16">
-          <div className="flex items-center gap-2">
-            <Bot className="w-8 h-8 text-purple-500" />
-            <span className="text-xl font-bold text-white">RoboMarket</span>
-          </div>
+      <div className="max-w-7xl mx-auto">
+        <div className="relative flex items-center justify-between bg-gray-900/50 backdrop-blur-xl rounded-full px-6 py-3 border border-gray-800">
+          <Link to="/" className="text-xl font-bold bg-gradient-to-r from-purple-400 to-purple-600 text-transparent bg-clip-text">
+            RoboMarket
+          </Link>
 
-          {/* Desktop Menu */}
-          <div className="hidden md:flex items-center gap-8">
-            <motion.div 
-              className="relative mt-2 group"
-              initial={{ width: "200px" }}
-              whileHover={{ width: "250px" }}
-              transition={{ duration: 0.3, ease: "easeInOut" }}
-            >
-              <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                <Search className="w-5 h-5 text-gray-400" />
-              </div>
+          <div className="hidden md:block flex-1 max-w-lg mx-8">
+            <div className={`relative transition-all duration-300 ${isSearchFocused ? 'scale-105' : ''}`}>
               <input
-                type="search"
-                className="block w-full p-2 pl-10 text-sm bg-black/30 border border-gray-700 rounded-full 
-                text-white placeholder-gray-400 focus:ring-2 focus:ring-purple-600 focus:border-transparent
-                transition-all duration-300 ease-in-out
-                hover:bg-black/50 focus:bg-black/50"
-                placeholder="Search robots..."
+                type="text"
+                placeholder="Search components..."
+                className="w-full bg-black/30 text-white rounded-full py-2 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-purple-500/50 border border-gray-800"
+                onFocus={() => setIsSearchFocused(true)}
+                onBlur={() => setIsSearchFocused(false)}
               />
-            </motion.div>
-            <a href="#" className="text-gray-300 hover:text-white transition-colors">Marketplace</a>
-            <a href="#" className="text-gray-300 hover:text-white transition-colors">Categories</a>
-            <a href="#" className="text-gray-300 hover:text-white transition-colors">About</a>
-            <button className="px-4 py-2 rounded-full bg-purple-600 text-white hover:bg-purple-700 transition-colors">
-              Connect Wallet
-            </button>
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+            </div>
           </div>
 
-          {/* Mobile Menu Button */}
+          <div className="hidden md:flex items-center gap-4">
+            <Link to="/cart" className="relative p-2 hover:bg-white/5 rounded-full transition-colors">
+              <ShoppingCart className="w-6 h-6" />
+              {totalItems > 0 && (
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  className="absolute -top-1 -right-1 bg-purple-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center"
+                >
+                  {totalItems}
+                </motion.div>
+              )}
+            </Link>
+          </div>
+
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="md:hidden text-gray-300 hover:text-white"
+            className="md:hidden p-2 hover:bg-white/5 rounded-full transition-colors"
           >
-            {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            {isOpen ? (
+              <X className="w-6 h-6" />
+            ) : (
+              <Menu className="w-6 h-6" />
+            )}
           </button>
         </div>
 
         {/* Mobile Menu */}
-        {isOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.2 }}
-            className="md:hidden py-4"
-          >
-            <div className="flex flex-col gap-4">
-              <a href="#" className="text-gray-300 hover:text-white transition-colors">Marketplace</a>
-              <a href="#" className="text-gray-300 hover:text-white transition-colors">Categories</a>
-              <a href="#" className="text-gray-300 hover:text-white transition-colors">About</a>
-              <button className="px-4 py-2 rounded-full bg-purple-600 text-white hover:bg-purple-700 transition-colors">
-                Connect Wallet
-              </button>
-            </div>
-          </motion.div>
-        )}
+        <AnimatePresence>
+          {isOpen && (
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              className="absolute inset-x-4 top-24 bg-gray-900/95 backdrop-blur-xl rounded-2xl border border-gray-800 p-6 md:hidden"
+            >
+              <div className="space-y-4">
+                <div className="relative">
+                  <input
+                    type="text"
+                    placeholder="Search components..."
+                    className="w-full bg-black/30 text-white rounded-full py-2 pl-10 pr-4 focus:outline-none focus:ring-2 focus:ring-purple-500/50 border border-gray-800"
+                  />
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                </div>
+                <Link to="/cart" className="flex items-center gap-2 p-2 hover:bg-white/5 rounded-lg transition-colors">
+                  <ShoppingCart className="w-6 h-6" />
+                  <span>Cart {totalItems > 0 && `(${totalItems})`}</span>
+                </Link>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </motion.nav>
   );

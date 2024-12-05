@@ -1,39 +1,53 @@
-import React, { useEffect } from 'react';
-import Lenis from '@studio-freight/lenis'
-import { Navbar } from './components/Navbar';
-import { Hero } from './components/Hero';
-import { FeaturedRobots } from './components/FeaturedRobots';
-import { Stats } from './components/Stats';
-import { CircuitBackground } from './components/CircuitBackground';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { CartProvider } from './context/CartContext';
+import Navbar from './components/Navbar';
+import Hero from './components/Hero';
+import FeaturedProducts from './components/FeaturedRobots';
+import Cart from './pages/Cart';
+import Checkout from './pages/Checkout';
+import Lenis from '@studio-freight/lenis';
+import { useEffect } from 'react';
 
 function App() {
   useEffect(() => {
-    const lenis = new Lenis()
+    const lenis = new Lenis({
+      duration: 1.2,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      orientation: 'vertical',
+      smoothWheel: true
+    });
 
     function raf(time: number) {
-      lenis.raf(time)
-      requestAnimationFrame(raf)
+      lenis.raf(time);
+      requestAnimationFrame(raf);
     }
 
-    requestAnimationFrame(raf)
+    requestAnimationFrame(raf);
 
     return () => {
-      lenis.destroy()
-    }
-  }, [])
+      lenis.destroy();
+    };
+  }, []);
 
   return (
-    <div className="min-h-screen bg-black">
-      <div className="fixed inset-0 z-0">
-        <CircuitBackground />
-      </div>
-      <div className="relative z-10 min-h-screen">
-        <Navbar />
-        <Hero />
-        <Stats />
-        <FeaturedRobots />
-      </div>
-    </div>
+    <Router>
+      <CartProvider>
+        <div className="min-h-screen bg-gradient-to-b from-gray-900 to-black text-white">
+          <Navbar />
+          <Routes>
+            <Route path="/" element={
+              <>
+                <Hero />
+                <FeaturedProducts />
+              </>
+            } />
+            <Route path="/cart" element={<Cart />} />
+            <Route path="/checkout" element={<Checkout />} />
+          </Routes>
+        </div>
+      </CartProvider>
+    </Router>
   );
 }
 

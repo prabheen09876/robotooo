@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Bot } from 'lucide-react';
+import { Cpu } from 'lucide-react';
 
 export function Hero() {
   return (
@@ -21,7 +21,7 @@ export function Hero() {
             className="flex justify-center"
           >
             <div className="p-4 rounded-full bg-purple-500/10 backdrop-blur-sm">
-              <Bot className="w-16 h-16 text-purple-500" />
+              <Cpu className="w-16 h-16 text-purple-500" />
             </div>
           </motion.div>
 
@@ -30,7 +30,7 @@ export function Hero() {
           </h1>
           
           <p className="text-xl md:text-2xl text-gray-400 max-w-2xl mx-auto">
-            The future of robotics trading. Discover, buy, and sell cutting-edge robots and AI systems.
+            Your one-stop shop for robotics components, electronics, and spare parts. Build your next innovation with premium quality parts.
           </p>
 
           <motion.div
@@ -40,10 +40,10 @@ export function Hero() {
             className="flex flex-col sm:flex-row gap-4 justify-center"
           >
             <button className="px-8 py-4 rounded-full bg-gradient-to-r from-purple-600 to-blue-600 text-white font-semibold hover:opacity-90 transition-opacity">
-              Explore Marketplace
+              Browse Components
             </button>
             <button className="px-8 py-4 rounded-full border border-gray-700 text-gray-300 font-semibold hover:bg-gray-800/50 transition-colors">
-              List Your Robot
+              Sell Components
             </button>
           </motion.div>
         </motion.div>
